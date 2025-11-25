@@ -28,7 +28,6 @@ plt.figure(figsize=(12, 5))
 # Adicionei marker='.' para mostrar cada ponto traçado (fica mais técnico)
 plt.plot(serie_vinho.index, serie_vinho, label='Dados Observados', color='#800020', marker='.', linestyle='-')
 
-# --- MUDANÇA AQUI: Título Oficial do PDF ---
 plt.title('1. Traçado da Série Temporal: Vendas de VINHO (WINE)', fontsize=14, fontweight='bold')
 # -------------------------------------------
 
@@ -46,66 +45,3 @@ fig.suptitle('2. Decomposição (Vinho)', fontsize=14)
 plt.tight_layout()
 plt.show()
 
-# 3. Previsão Longa (Vinho)
-modelo_vinho = ExponentialSmoothing(serie_vinho, trend='add', seasonal='add', seasonal_periods=12).fit()
-meses_futuros = 72 # 6 anos (até 2026)
-prev_vinho = modelo_vinho.forecast(steps=meses_futuros)
-
-plt.figure(figsize=(14, 7))
-plt.plot(serie_vinho.index, serie_vinho, label='Histórico', color='#800020')
-plt.plot(prev_vinho.index, prev_vinho, label='Projeção Estendida (até 2026)', color='red', linestyle='--')
-plt.title('3. Projeção de Cenário: VINHO (até 2026)')
-plt.legend()
-plt.grid(True, alpha=0.3)
-plt.show()
-
-print(f"Média de Vendas Mensal (Vinho): {serie_vinho.mean():.2f}")
-
-# ==============================================================================
-# --- ANÁLISE 2: CERVEJA (BEER) ---
-# ==============================================================================
-print("\n" + "="*50)
-print("INICIANDO ANÁLISE 2: CERVEJA (BEER)")
-print("="*50)
-
-df_beer = df[df['ITEM TYPE'] == 'BEER']
-serie_beer = df_beer.groupby('Data')['RETAIL SALES'].sum().asfreq('MS').fillna(0)
-
-# 1. Traçar Série (Cerveja)
-plt.figure(figsize=(12, 5))
-
-# Adicionei marker='.' aqui também
-plt.plot(serie_beer.index, serie_beer, label='Dados Observados', color='#FF8C00', marker='.', linestyle='-')
-
-# --- MUDANÇA AQUI: Título Oficial do PDF ---
-plt.title('1. Traçado da Série Temporal: Vendas de CERVEJA (BEER)', fontsize=14, fontweight='bold')
-# -------------------------------------------
-
-plt.xlabel('Eixo Temporal (Mensal)')
-plt.ylabel('Volume de Vendas')
-plt.legend()
-plt.grid(True, alpha=0.3)
-plt.show()
-
-# 2. Decomposição (Cerveja)
-decomp_beer = seasonal_decompose(serie_beer, model='additive')
-fig = decomp_beer.plot()
-fig.set_size_inches(10, 8)
-fig.suptitle('2. Decomposição (Cerveja)', fontsize=14)
-plt.tight_layout()
-plt.show()
-
-# 3. Previsão Longa (Cerveja) - AGORA IGUAL AO VINHO
-modelo_beer = ExponentialSmoothing(serie_beer, trend='add', seasonal='add', seasonal_periods=12).fit()
-prev_beer = modelo_beer.forecast(steps=meses_futuros) # Usando os mesmos 72 meses
-
-plt.figure(figsize=(14, 7))
-plt.plot(serie_beer.index, serie_beer, label='Histórico', color='#FF8C00')
-plt.plot(prev_beer.index, prev_beer, label='Projeção Estendida (até 2026)', color='black', linestyle='--')
-plt.title('3. Projeção de Cenário: CERVEJA (até 2026)')
-plt.legend()
-plt.grid(True, alpha=0.3)
-plt.show()
-
-print(f"Média de Vendas Mensal (Cerveja): {serie_beer.mean():.2f}")
-print("="*50)

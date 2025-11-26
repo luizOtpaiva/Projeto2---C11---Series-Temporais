@@ -83,3 +83,26 @@ plt.ylabel('Volume de Vendas')
 plt.legend()
 plt.grid(True, alpha=0.3)
 plt.show()
+
+# 2. Decomposição (Cerveja)
+decomp_beer = seasonal_decompose(serie_beer, model='additive')
+fig = decomp_beer.plot()
+fig.set_size_inches(10, 8)
+fig.suptitle('2. Decomposição (Cerveja)', fontsize=14)
+plt.tight_layout()
+plt.show()
+
+# 3. Previsão Longa (Cerveja) - IGUAL AO VINHO
+modelo_beer = ExponentialSmoothing(serie_beer, trend='add', seasonal='add', seasonal_periods=12).fit()
+prev_beer = modelo_beer.forecast(steps=meses_futuros) # Usando os mesmos 72 meses
+
+plt.figure(figsize=(14, 7))
+plt.plot(serie_beer.index, serie_beer, label='Histórico', color='#FF8C00')
+plt.plot(prev_beer.index, prev_beer, label='Projeção Estendida (até 2026)', color='black', linestyle='--')
+plt.title('3. Projeção de Cenário: CERVEJA (até 2026)')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+print(f"Média de Vendas Mensal (Cerveja): {serie_beer.mean():.2f}")
+print("="*50)

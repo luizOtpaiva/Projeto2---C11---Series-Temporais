@@ -12,25 +12,18 @@ plt.style.use('ggplot')
 df = pd.read_csv('Warehouse_and_Retail_Sales.csv')
 df['Data'] = pd.to_datetime({'year': df['YEAR'], 'month': df['MONTH'], 'day': 1})
 
-# --- PASSO NOVO: LIMPEZA DOS ZEROS ---
-# Removemos do dataset original qualquer venda que seja 0.0
-# Isso evita que a gente some zeros e puxe a média para baixo
 df = df[df['RETAIL SALES'] > 0]
 
 print("Dados limpos: Linhas com vendas zeradas foram removidas.")
 
-# ==============================================================================
-# --- ANÁLISE 1: VINHO (WINE) ---
-# ==============================================================================
+# ANÁLISE 1: VINHO (WINE)
+
 print("\n" + "="*50)
 print("INICIANDO ANÁLISE 1: VINHO (WINE)")
 print("="*50)
 
 df_vinho = df[df['ITEM TYPE'] == 'WINE']
 
-# Agrupar e usar INTERPOLATE em vez de fillna(0)
-# Isso preenche os "buracos" de datas vazias com uma média suave,
-# eliminando a queda brusca no gráfico.
 serie_vinho = df_vinho.groupby('Data')['RETAIL SALES'].sum().asfreq('MS').interpolate()
 
 # 1. Traçar Série (Vinho)
@@ -66,9 +59,8 @@ plt.show()
 
 print(f"Média de Vendas Mensal (Vinho): {serie_vinho.mean():.2f}")
 
-# ==============================================================================
-# --- ANÁLISE 2: CERVEJA (BEER) ---
-# ==============================================================================
+#ANÁLISE 2: CERVEJA (BEER)
+
 print("\n" + "="*50)
 print("INICIANDO ANÁLISE 2: CERVEJA (BEER)")
 print("="*50)
@@ -76,7 +68,7 @@ print("="*50)
 df_beer = df[df['ITEM TYPE'] == 'BEER']
 serie_beer = df_beer.groupby('Data')['RETAIL SALES'].sum().asfreq('MS').interpolate()
 
-# 1. Traçar Série (Cerveja)
+# 1.Traçar Série (Cerveja)
 plt.figure(figsize=(12, 5))
 plt.plot(serie_beer.index, serie_beer, label='Dados Observados (Sem Zeros)', color='#FF8C00', marker='.', linestyle='-')
 plt.title('1. Traçado da Série Temporal: Vendas de CERVEJA (BEER)', fontsize=14, fontweight='bold')
@@ -86,7 +78,7 @@ plt.legend()
 plt.grid(True, alpha=0.3)
 plt.show()
 
-# 2. Decomposição (Cerveja)
+# 2.Decomposição (Cerveja)
 decomp_beer = seasonal_decompose(serie_beer, model='additive')
 fig = decomp_beer.plot()
 fig.set_size_inches(10, 8)
